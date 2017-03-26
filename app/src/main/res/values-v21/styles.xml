@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <!--==========================================================================================-->
+    <!-- LOGIN AND SIGNUP CATEGORY -->
+    <!--==========================================================================================-->
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="colorPrimary">@android:color/transparent</item>
+    <item name="colorPrimaryDark">@android:color/transparent</item>
+    <item name="colorAccent">@color/LogincolorAccent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="windowActionBarOverlay">true</item>
+    <item name="android:windowTranslucentStatus">true</item>
+</style>
+</resources>

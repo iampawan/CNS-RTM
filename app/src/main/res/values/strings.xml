@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CNS RTM</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="login">Sign In</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="fetching">Fetching Data...</string>
+    <string name="check_internet">Check your internet connection.</string>
+    <string name="enter_all_fields">Please input all the fields.</string>
+</resources>
