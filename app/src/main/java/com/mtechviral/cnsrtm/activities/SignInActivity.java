@@ -1,11 +1,13 @@
 package com.mtechviral.cnsrtm.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -18,17 +20,20 @@ import com.mtechviral.cnsrtm.apis.interfaces.LoginApiService;
 import com.mtechviral.cnsrtm.databinding.ActivityMainBinding;
 import com.mtechviral.cnsrtm.model.LoginRequest;
 import com.mtechviral.cnsrtm.model.LoginResponse;
-import com.mtechviral.cnsrtm.model.datamodel.User;
+import com.mtechviral.cnsrtm.databinding.User;
+import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+public class SignInActivity extends AppCompatActivity {
+    public static final String TAG = SignInActivity.class.getSimpleName();
     ActivityMainBinding activityMainBinding;
     LoginApiService loginApiService;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +42,22 @@ public class MainActivity extends AppCompatActivity {
         User user = new User();
         activityMainBinding.setUser(user);
         activityMainBinding.setActivity(this);
+
+        //check login
+
+        checkLoggedIn();
+
         setToolbar();
         loadBG();
         //getApiService
         loginApiService = ApiUtils.getLoginAPIService();
+    }
+
+    private void checkLoggedIn(){
+        if(Prefs.getBoolean("loggedIn",false)){
+            startActivity(new Intent(this,HomeActivity.class));
+            finish();
+        }
     }
 
     private void setToolbar() {
@@ -60,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        activityMainBinding.activityBg.setBackground(resource);
+                        activityMainBinding.airportView.setBackground(resource);
                     }
                 });
     }
@@ -73,15 +90,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.check_internet, Toast.LENGTH_SHORT).show();
             }
 
-        }
-        else {
-            Toast.makeText(this,R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void sendPost(String username, String password) {
-        final ProgressDialog pd = Utility.showProgress(this);
+        final ProgressDialog pd = Utility.showProgress(this,R.string.please_wait);
         final LoginRequest loginPost = new LoginRequest(username, password);
+
         loginApiService.savePost(loginPost).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<LoginResponse>() {
                     @Override
@@ -93,18 +110,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         pd.dismiss();
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
 
                     @Override
                     public void onNext(LoginResponse loginResponse) {
                         pd.dismiss();
-                        Toast.makeText(MainActivity.this, loginResponse.toString(), Toast.LENGTH_SHORT).show();
+                        String token = loginResponse.getToken();
+                        Prefs.putBoolean("loggedIn",true);
+                        Prefs.putString("token",token);
+                        Log.d(TAG, "onNext: Token"+token);
+                        Intent i = new Intent(SignInActivity.this, HomeActivity.class);
+                        startActivity(i);
+                        finish();
 
                     }
 
                 });
+
     }
 
 }

@@ -17,11 +17,11 @@ public class Utility {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public static ProgressDialog showProgress(Context context){
+    public static ProgressDialog showProgress(Context context, int message){
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setTitle(R.string.please_wait);
-        progressDialog.setMessage(context.getString(R.string.fetching));
+        progressDialog.setMessage(context.getString(message));
         progressDialog.setCancelable(false);
         progressDialog.show();
         return progressDialog;

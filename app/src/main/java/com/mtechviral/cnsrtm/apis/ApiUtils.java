@@ -1,6 +1,7 @@
 package com.mtechviral.cnsrtm.apis;
 
 import com.mtechviral.cnsrtm.apis.interfaces.LoginApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.MaterialListApiService;
 
 /**
  * Created by pawankumar on 09/03/17.
@@ -15,4 +16,10 @@ public class ApiUtils {
 
         return RetrofitClient.getClient(BASE_URL).create(LoginApiService.class);
     }
+
+    public static MaterialListApiService getMaterialListAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(MaterialListApiService.class);
+    }
+
 }

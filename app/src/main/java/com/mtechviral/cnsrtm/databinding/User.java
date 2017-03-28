@@ -1,4 +1,4 @@
-package com.mtechviral.cnsrtm.model.datamodel;
+package com.mtechviral.cnsrtm.databinding;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
@@ -30,6 +30,6 @@ public class User extends BaseObservable {
 
     public void setPassword(String password) {
         this.password = password;
-        notifyPropertyChanged(BR.username);
+        notifyPropertyChanged(BR.password);
     }
 }
