@@ -14,6 +14,10 @@ android {
     dataBinding {
         enabled = true
     }
+    dexOptions {
+        // Prevent OutOfMemory with MultiDex during the build phase
+        javaMaxHeapSize "4g"
+    }
 
     buildTypes {
         release {
@@ -42,4 +46,5 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:25.3.0'
+    compile 'com.elyeproj.libraries:loaderviewlibrary:1.3.0'
 }

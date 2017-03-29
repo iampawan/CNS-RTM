@@ -24,6 +24,8 @@
         <item name="tabIndicatorColor">@android:color/white</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
         <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabGravity">center</item>
+        <item name="tabMode">fixed</item>
     </style>
 
     <style name="LoginTheme" parent="Theme.AppCompat.Light.DarkActionBar">

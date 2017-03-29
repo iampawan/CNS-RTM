@@ -1,15 +1,14 @@
 package com.mtechviral.cnsrtm.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.elyeproj.loaderviewlibrary.LoaderImageView;
 import com.mtechviral.cnsrtm.R;
 import com.mtechviral.cnsrtm.listeners.EquipmentClickListener;
 import com.mtechviral.cnsrtm.model.datamodel.EquipmentData;
@@ -33,23 +32,17 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView image1,image2;
-        private TextView title1,itemCount1,title2,itemCount2;
-        private CardView leftLayout, rightLayout;
+        private LoaderImageView image;
+        private TextView title, item_count;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             itemView.setOnClickListener(this);
 
-            leftLayout = (CardView) itemView.findViewById(R.id.leftLayout);
-            rightLayout = (CardView) itemView.findViewById(R.id.rightLayout);
-            image1 = (ImageView) itemView.findViewById(R.id.image1);
-            title1 = (TextView) itemView.findViewById(R.id.title1);
-            itemCount1 = (TextView) itemView.findViewById(R.id.itemCount1);
-            image2 = (ImageView) itemView.findViewById(R.id.image2);
-            title2 = (TextView) itemView.findViewById(R.id.title2);
-            itemCount2 = (TextView) itemView.findViewById(R.id.itemCount2);
+            image = (LoaderImageView) itemView.findViewById(R.id.image);
+            title = (TextView) itemView.findViewById(R.id.title);
+            item_count = (TextView) itemView.findViewById(R.id.item_count);
         }
 
         @Override
@@ -59,6 +52,12 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
                 clicklistener.itemClicked(v, getAdapterPosition());
             }
         }
+    }
+
+
+    public void resetListData() {
+        dataList = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public void setClickListener(EquipmentClickListener listener) {
@@ -74,28 +73,15 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        int num = position + 1;
-        holder.leftLayout.setVisibility(View.GONE);
-        holder.rightLayout.setVisibility(View.GONE);
-        if(num % 2 != 0) {
-            holder.leftLayout.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .load(R.drawable.airoplane)
-                    .thumbnail(0.01f)
-                    .centerCrop()
-                    .into(holder.image1);
-            holder.title1.setText(dataList.get(position).getMaterialName());
-            holder.itemCount1.setText(dataList.get(position).getId() + " Items");
-        }else{
-            holder.rightLayout.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .load(R.drawable.airoplane)
-                    .thumbnail(0.01f)
-                    .centerCrop()
-                    .into(holder.image2);
-            holder.title2.setText(dataList.get(position).getMaterialName());
-            holder.itemCount2.setText(dataList.get(position).getId() + " Items");
-        }
+        holder.title.setText(dataList.get(position).getMaterialName());
+        holder.item_count.setText(dataList.get(position).getId().toString()+" items in stock");
+
+        Glide.with(context)
+                .load("https://s3-us-west-2.amazonaws.com/material-ui-template/ecommerce/style-6/Ecommerce-6-img-1.jpg")
+                .thumbnail(0.01f)
+                .fitCenter()
+                .placeholder(R.drawable.loading_placeholder)
+                .into(holder.image);
     }
 
     @Override
