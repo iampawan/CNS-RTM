@@ -11,8 +11,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Space;
@@ -39,6 +42,7 @@ import rx.schedulers.Schedulers;
 public class HomeActivity extends AppCompatActivity implements EquipmentClickListener, View.OnClickListener {
     MaterialListApiService materialListApiService;
     RecyclerView rView;
+    private SearchView searchView;
     SwipeRefreshLayout mSwipeRefreshLayout;
     EquipmentAdapter rcAdapter;
     ArrayList<EquipmentData> allItems = new ArrayList<>();
@@ -238,6 +242,59 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setIconified(false);
+        searchView.setQueryHint("Search item...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                try {
+                    rcAdapter.getFilter().filter(s);
+                } catch (Exception e) {
+                }
+                return true;
+            }
+        });
+        // Detect SearchView icon clicks
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                itemTouchHelper.attachToRecyclerView(null);
+                setItemsVisibility(menu, searchItem, false);
+            }
+        });
+
+        // Detect SearchView close
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+//                itemTouchHelper.attachToRecyclerView(rView);
+                setItemsVisibility(menu, searchItem, true);
+                return false;
+            }
+        });
+        searchView.onActionViewCollapsed();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
+        for (int i=0; i<menu.size(); ++i) {
+            MenuItem item = menu.getItem(i);
+            if (item != exception) item.setVisible(visible);
         }
     }
 }
