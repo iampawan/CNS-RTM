@@ -13,12 +13,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="HomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="SpareTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorAccentDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="HomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@android:color/transparent</item>
+    <item name="colorPrimaryDark">@android:color/transparent</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="windowActionBarOverlay">true</item>
+    <item name="selectableItemBackground">@drawable/selectable_item_background</item>
+    <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
+    </style>
     <style name="ActivityTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabIndicatorColor">@android:color/white</item>

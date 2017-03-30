@@ -8,8 +8,38 @@
         android:id="@+id/swipeToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:padding="12dp"
+            android:text="@string/equipments"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/moreDressItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="12dp"
+            android:text="@string/all_items"
+            android:textColor="@color/grey_60"
+            android:textSize="11sp" />
+
+    </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -34,6 +64,8 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
+
+</LinearLayout>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>

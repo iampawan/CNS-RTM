@@ -1,45 +1,30 @@
 package com.mtechviral.cnsrtm.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.NavigationView;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Space;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.mtechviral.cnsrtm.R;
-import com.mtechviral.cnsrtm.adapters.EquipmentAdapter;
+import com.mtechviral.cnsrtm.adapters.SpareAdapter;
 import com.mtechviral.cnsrtm.apis.ApiUtils;
-import com.mtechviral.cnsrtm.apis.interfaces.MaterialListApiService;
-import com.mtechviral.cnsrtm.listeners.EquipmentClickListener;
-import com.mtechviral.cnsrtm.model.EquipmentRequest;
-import com.mtechviral.cnsrtm.model.EquipmentResponse;
-import com.mtechviral.cnsrtm.model.datamodel.EquipmentData;
+import com.mtechviral.cnsrtm.apis.interfaces.SpareListApiService;
+import com.mtechviral.cnsrtm.listeners.SpareClickListener;
+import com.mtechviral.cnsrtm.model.SpareRequest;
+import com.mtechviral.cnsrtm.model.SpareResponse;
+import com.mtechviral.cnsrtm.model.datamodel.SpareData;
 import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
 
@@ -49,92 +34,46 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HomeActivity extends AppCompatActivity implements EquipmentClickListener, View.OnClickListener {
-    MaterialListApiService materialListApiService;
+public class SpareActivity extends AppCompatActivity implements SpareClickListener {
+    SpareListApiService spareListApiService;
     RecyclerView rView;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    EquipmentAdapter rcAdapter;
-    ArrayList<EquipmentData> allItems = new ArrayList<>();
-    ImageView profileView;
+    SpareAdapter rcAdapter;
+    ArrayList<SpareData> allItems = new ArrayList<>();
+    Integer mat_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_spare);
         initToolbaritems();
-        initNavigation();
         initComponents();
+        mat_id = getIntent().getExtras().getInt("mat_id");
 
     }
 
     private void initToolbaritems() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        profileView = (ImageView) findViewById(R.id.profileView);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        String url = "";
-        String urlThumb = "https://s3-us-west-2.amazonaws.com/material-ui-template/" + "profile/style-3/Profile-3-header-thumb.png";
-
-        loadImageRequest(drawer, url, urlThumb);
-    }
-
-    private void loadImageRequest(final DrawerLayout bg, String url, String urlThumb) {
-        Glide.with(this).load(R.drawable.airoplane).asBitmap().centerCrop().into(new BitmapImageViewTarget(profileView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                profileView.setImageDrawable(circularBitmapDrawable);
-            }
-        });
-        DrawableRequestBuilder<String> thumbnailRequest = Glide
-                .with(this)
-                .load(urlThumb);
-
-        Glide.with(this)
-                .load(R.drawable.airport)
-                .crossFade()
-                .centerCrop()
-                .thumbnail(thumbnailRequest)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        bg.setBackground(resource);
-                    }
-                });
-    }
-
-
-    private void initNavigation() {
-        final NavigationView navigationViewLeft = (NavigationView) findViewById(R.id.nav_view);
-        View navLeftLay = navigationViewLeft.getHeaderView(0);
-        Space spaceLeftTop = (Space) navLeftLay.findViewById(R.id.spaceLeftTop);
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            spaceLeftTop.setVisibility(View.VISIBLE);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void initComponents() {
         rView = (RecyclerView) findViewById(R.id.recyclerView);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         rView.setLayoutManager(layoutManager);
         rView.setNestedScrollingEnabled(false);
         rView.setHasFixedSize(false);
-        rcAdapter = new EquipmentAdapter(this, new ArrayList<EquipmentData>());
+        rcAdapter = new SpareAdapter(this, new ArrayList<SpareData>());
         rView.setAdapter(rcAdapter);
 
-        materialListApiService = ApiUtils.getMaterialListAPIService();
+        spareListApiService = ApiUtils.getSpareListAPIService();
 
         loadJSON();
 
@@ -146,11 +85,11 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
 
             }
         });
+
     }
+    private void setRecyclerView(ArrayList<SpareData> rowListItem) {
 
-    private void setRecyclerView(ArrayList<EquipmentData> rowListItem) {
-
-        rcAdapter = new EquipmentAdapter(this, rowListItem);
+        rcAdapter = new SpareAdapter(this, rowListItem);
         rView.setAdapter(rcAdapter);
         rcAdapter.setClickListener(this);
     }
@@ -169,10 +108,10 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     }
 
     private void requestMaterialData() {
-        final EquipmentRequest equipmentRequest = new EquipmentRequest(Prefs.getString("token", ""));
+        final SpareRequest spareRequest = new SpareRequest(Prefs.getString("token", ""),mat_id);
 
-        materialListApiService.savePost(equipmentRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<EquipmentResponse>() {
+        spareListApiService.savePost(spareRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SpareResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -185,9 +124,9 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
                     }
 
                     @Override
-                    public void onNext(EquipmentResponse equipmentResponse) {
-                        if (equipmentResponse.getMessage().equals("Success")) {
-                            displayApiResult(equipmentResponse);
+                    public void onNext(SpareResponse spareResponse) {
+                        if (spareResponse.getMessage().equals("Success")) {
+                            displayApiResult(spareResponse);
                         } else {
                             onFailRequest(getString(R.string.something_wrong));
                         }
@@ -196,15 +135,15 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
                 });
     }
 
-    private void displayApiResult(EquipmentResponse equipmentResponse) {
+    private void displayApiResult(SpareResponse spareResponse) {
         allItems.clear();
         swipeProgress(false);
-        int datasize = equipmentResponse.getData().size();
+        int datasize = spareResponse.getData().size();
         if (datasize == 0) {
             showNoItemView(true);
         } else {
             for (int i = 0; i < datasize; i++) {
-                allItems.add(i, equipmentResponse.getData().get(i));
+                allItems.add(i, spareResponse.getData().get(i));
             }
             setRecyclerView(allItems);
         }
@@ -222,11 +161,10 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     @Override
     public void itemClicked(View view, int position) {
         int num = position + 1;
-        String name = allItems.get(position).getMaterialName();
-        Integer id = allItems.get(position).getId();
+        String name = allItems.get(position).getName();
+        String id = allItems.get(position).getId().toString();
         Log.d("aa", "itemClicked: "+name+"-"+id);
-        Intent i = new Intent(this, SpareActivity.class);
-        i.putExtra("mat_id",id);
+        Intent i = new Intent(this, ItemDetailActivity.class);
         startActivity(i);
     }
 
@@ -272,23 +210,6 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
             }
         });
     }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnLoginSignupBack:
-                onBackPressed();
-                break;
-            default:
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {

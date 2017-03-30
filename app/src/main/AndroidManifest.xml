@@ -15,17 +15,24 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SignInActivity"
-            android:theme="@style/LoginTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.HomeActivity"
-            android:theme="@style/HomeTheme"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activities.HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/HomeTheme" />
+        <activity
+            android:name=".activities.ItemDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/HomeTheme"></activity>
+        <activity android:name=".activities.SpareActivity"
+            android:theme="@style/SpareTheme"></activity>
     </application>
 
 </manifest>

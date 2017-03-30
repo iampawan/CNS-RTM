@@ -12,24 +12,24 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.elyeproj.loaderviewlibrary.LoaderImageView;
 import com.mtechviral.cnsrtm.R;
-import com.mtechviral.cnsrtm.listeners.EquipmentClickListener;
-import com.mtechviral.cnsrtm.model.datamodel.EquipmentData;
+import com.mtechviral.cnsrtm.listeners.SpareClickListener;
+import com.mtechviral.cnsrtm.model.datamodel.SpareData;
 
 import java.util.ArrayList;
 
 /**
- * Created by pawankumar on 28/03/17.
+ * Created by pawankumar on 30/03/17.
  */
 
-public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.ItemViewHolder> implements Filterable {
-    private static ArrayList<EquipmentData> dataList;
-    private static ArrayList<EquipmentData> filtered_datalist;
+public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ItemViewHolder> implements Filterable {
+    private static ArrayList<SpareData> dataList;
+    private static ArrayList<SpareData> filtered_datalist;
     private LayoutInflater mInflater;
     private Context context;
-    private EquipmentClickListener clicklistener = null;
-    private ItemFilter mFilter = new ItemFilter();
+    private SpareClickListener clicklistener = null;
+    private SpareAdapter.ItemFilter mFilter = new SpareAdapter.ItemFilter();
 
-    public EquipmentAdapter(Context ctx, ArrayList<EquipmentData> data) {
+    public SpareAdapter(Context ctx, ArrayList<SpareData> data) {
         context = ctx;
         dataList = data;
         filtered_datalist = data;
@@ -41,18 +41,17 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
         return mFilter;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LoaderImageView image;
         private TextView title, item_count;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
-
             itemView.setOnClickListener(this);
 
             image = (LoaderImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
-            item_count = (TextView) itemView.findViewById(R.id.material_id);
+            item_count = (TextView) itemView.findViewById(R.id.item_count);
         }
 
         @Override
@@ -70,24 +69,24 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
         notifyDataSetChanged();
     }
 
-    public void setClickListener(EquipmentClickListener listener) {
+    public void setClickListener(SpareClickListener listener) {
         this.clicklistener = listener;
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_equipments, parent, false);
-        ItemViewHolder itemViewHolder = new ItemViewHolder(view);
-        return itemViewHolder;
+    public SpareAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_spares, parent, false);
+        return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.title.setText(dataList.get(position).getMaterialName());
-        holder.item_count.setText("Material ID : "+dataList.get(position).getId().toString());
+    public void onBindViewHolder(SpareAdapter.ItemViewHolder holder, int position) {
+        holder.title.setText(dataList.get(position).getName());
+        holder.item_count.setText(dataList.get(position).getQuantity().toString()+" items in stock");
 
         Glide.with(context)
-                .load("https://s3-us-west-2.amazonaws.com/material-ui-template/ecommerce/style-6/Ecommerce-6-img-1.jpg")
+//                .load("https://s3-us-west-2.amazonaws.com/material-ui-template/ecommerce/style-6/Ecommerce-6-img-1.jpg")
+                .load(dataList.get(position).getImageurl())
                 .thumbnail(0.01f)
                 .fitCenter()
                 .placeholder(R.drawable.loading_placeholder)
@@ -106,11 +105,11 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
             String query = constraint.toString().toLowerCase();
 
             FilterResults results = new FilterResults();
-            final ArrayList<EquipmentData> list = filtered_datalist;
-            final ArrayList<EquipmentData> result_list = new ArrayList<>(list.size());
+            final ArrayList<SpareData> list = filtered_datalist;
+            final ArrayList<SpareData> result_list = new ArrayList<>(list.size());
 
             for (int i = 0; i < list.size(); i++) {
-                String str_title = list.get(i).getMaterialName();
+                String str_title = list.get(i).getName();
                 if (str_title.toLowerCase().contains(query)) {
                     result_list.add(list.get(i));
                 }
@@ -124,7 +123,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter<EquipmentAdapter.Item
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            dataList = (ArrayList<EquipmentData>) results.values;
+            dataList = (ArrayList<SpareData>) results.values;
             notifyDataSetChanged();
         }
     }

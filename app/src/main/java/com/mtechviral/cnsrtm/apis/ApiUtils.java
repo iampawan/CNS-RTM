@@ -2,6 +2,7 @@ package com.mtechviral.cnsrtm.apis;
 
 import com.mtechviral.cnsrtm.apis.interfaces.LoginApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.MaterialListApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.SpareListApiService;
 
 /**
  * Created by pawankumar on 09/03/17.
@@ -20,6 +21,11 @@ public class ApiUtils {
     public static MaterialListApiService getMaterialListAPIService() {
 
         return RetrofitClient.getClient(BASE_URL).create(MaterialListApiService.class);
+    }
+
+    public static SpareListApiService getSpareListAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(SpareListApiService.class);
     }
 
 }

@@ -17,4 +17,9 @@
     <string name="airport_authority_of_india">Airport Authority of India</string>
     <string name="no_item">No item available.</string>
     <string name="TRY_AGAIN">TRY AGAIN</string>
+    <string name="proceed">Proceed</string>
+    <string name="admin">Admin</string>
+    <string name="delhi_airport">Delhi Airport</string>
+    <string name="equipments">Equipments</string>
+    <string name="all_items">All items</string>
 </resources>

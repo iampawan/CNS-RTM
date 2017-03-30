@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#bf30409c</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#ff9807</color>
+    <color name="colorPrimaryDark">#f27d04</color>
     <color name="colorAccent">#ff9807</color>
     <color name="colorAccentDark">#f27d04</color>
     <color name="button_orange">#fe5824</color>
@@ -31,4 +31,12 @@
     <color name="grey_60">#666666</color>
     <color name="grey_80">#37474F</color>
     <color name="grey_90">#263238</color>
+    <color name="greysplit">#70dfdfdf</color>
+
+    <color name="accent">#caffeb3b</color>
+    <color name="accent_translucent">#caffeb3b</color>
+    <color name="main_menu_bg">#34374a</color>
+    <color name="main_menu_bg_active">#353a4c</color>
+    <color name="main_menu_count_active">#ffffff</color>
+    <color name="main_menu_count_nonactive">#84ff02</color>
 </resources>
