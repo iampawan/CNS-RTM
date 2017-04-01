@@ -328,6 +328,10 @@
                 android:textStyle="bold" />
 
 </LinearLayout>
+            <com.jjoe64.graphview.GraphView
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:id="@+id/graph" />
         </LinearLayout>
 
 
@@ -351,7 +355,7 @@
             android:layout_height="38dp"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="@string/request_spare"
+            android:text="@string/view_all"
             android:textColor="@android:color/white" />
 
     </LinearLayout>

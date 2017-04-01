@@ -17,6 +17,17 @@ public class SpareResponse {
     @SerializedName("data")
     @Expose
     private List<SpareData> data = null;
+    @SerializedName("request_id")
+    @Expose
+    private Integer reqId;
+
+    public Integer getReqId() {
+        return reqId;
+    }
+
+    public void setReqId(Integer reqId) {
+        this.reqId = reqId;
+    }
 
     public String getMessage() {
         return message;

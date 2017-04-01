@@ -2,20 +2,25 @@ package com.mtechviral.cnsrtm.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.mtechviral.cnsrtm.R;
 import com.mtechviral.cnsrtm.apis.ApiUtils;
 import com.mtechviral.cnsrtm.apis.interfaces.SpareRequestApiService;
@@ -23,6 +28,8 @@ import com.mtechviral.cnsrtm.model.SpareOrderRequest;
 import com.mtechviral.cnsrtm.model.SpareOrderResponse;
 import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
+
+import java.util.Random;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -122,6 +129,21 @@ public class ItemDetailActivity extends AppCompatActivity implements View.OnClic
         } catch (Exception e) {
         }
 
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        Random rand = new Random();
+        int value = rand.nextInt(20);
+        int value1 = rand.nextInt(20);
+        int value2 = rand.nextInt(20);
+        int value3 = rand.nextInt(20);
+        int value4 = rand.nextInt(20);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                new DataPoint(0, value),
+                new DataPoint(1, value1),
+                new DataPoint(2, value2),
+                new DataPoint(3, value3),
+                new DataPoint(4, value4)
+        });
+        graph.addSeries(series);
 
     }
 
@@ -130,7 +152,18 @@ public class ItemDetailActivity extends AppCompatActivity implements View.OnClic
         switch (view.getId()) {
             case R.id.requestButton:
 //                Toast.makeText(this, "Button Apply Changes clicked!", Toast.LENGTH_SHORT).show();
-                requestSpare();
+                new MaterialDialog.Builder(ItemDetailActivity.this)
+                        .title(R.string.choose)
+                        .items(R.array.spare_detail_option)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                dialog.dismiss();
+                                Log.d("which2", "onSelection: "+which);
+                                requestSpare(which+1);
+                            }
+                        })
+                        .show();
                 break;
             case R.id.buttonMinus:
                 int num = Integer.parseInt(numItem.getText().toString());
@@ -148,8 +181,8 @@ public class ItemDetailActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void requestSpare() {
-        final SpareOrderRequest spareOrderRequest = new SpareOrderRequest(Prefs.getString("token", ""), spare_id);
+    private void requestSpare(Integer reqType) {
+        final SpareOrderRequest spareOrderRequest = new SpareOrderRequest(Prefs.getString("token", ""), spare_id,reqType);
         pd = Utility.showProgress(this, R.string.please_wait);
         spareRequestApiService.savePost(spareOrderRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<SpareOrderResponse>() {
@@ -181,15 +214,15 @@ public class ItemDetailActivity extends AppCompatActivity implements View.OnClic
         pd.dismiss();
         new AlertDialog.Builder(this)
                 .setTitle("Success")
-                .setMessage("Request is accepted. It will be processed shortly.")
+                .setMessage("Your request ID is: "+spareOrderResponse.getReqId()+". It will be processed shortly.")
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Intent i = new Intent(ItemDetailActivity.this, HomeActivity.class);
-                        startActivity(i);
-                        finish();
+//                        Intent i = new Intent(ItemDetailActivity.this, HomeActivity.class);
+//                        startActivity(i);
+//                        finish();
                     }
                 })
                 .show();
@@ -201,4 +234,14 @@ public class ItemDetailActivity extends AppCompatActivity implements View.OnClic
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return true;
+    }
 }

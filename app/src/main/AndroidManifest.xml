@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <application
         android:name=".CnsApp"
@@ -39,7 +42,12 @@
             android:name=".activities.PendingSpareActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SpareTheme" />
-        <activity android:name=".activities.CreateServiceActivity"></activity>
+        <activity android:name=".activities.CreateServiceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SpareTheme"/>
+        <activity android:name=".activities.QrActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SpareTheme"/>
     </application>
 
 </manifest>

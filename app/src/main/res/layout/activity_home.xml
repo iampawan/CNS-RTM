@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:text="@string/airport_authority_of_india"
+                        android:text="Airport Authority"
                         android:textSize="21sp" />
 
                 </android.support.v7.widget.Toolbar>
@@ -103,7 +103,7 @@
                     android:text="@string/admin"
                     android:id="@+id/tvAdminName"
                     android:textColor="@android:color/white"
-                    android:textSize="24sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -113,13 +113,14 @@
                     android:text="@string/delhi_airport"
                     android:id="@+id/tvAdminLocation"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
         </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

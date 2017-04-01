@@ -201,7 +201,6 @@ public class CreateServiceActivity extends AppCompatActivity implements View.OnC
                                           int minute) {
                             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             c.set(Calendar.MINUTE, minute);
-                            c.set(Calendar.SECOND, 0);
                             etPurchaseDate.setText(y+"-"+(moy + 1)+"-"+dom+" "+hourOfDay+":"+minute);
                             purchaseDate = etPurchaseDate.getText().toString();
                     }

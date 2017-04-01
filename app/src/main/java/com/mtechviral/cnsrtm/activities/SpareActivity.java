@@ -312,4 +312,6 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
         }
         return true;
     }
+
+
 }

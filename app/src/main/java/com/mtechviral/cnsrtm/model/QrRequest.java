@@ -7,23 +7,20 @@ import com.google.gson.annotations.SerializedName;
  * Created by pawankumar on 01/04/17.
  */
 
-public class SpareOrderRequest {
+public class QrRequest {
     @SerializedName("token")
     @Expose
     private String token;
-    @SerializedName("spare_id")
+    @SerializedName("sno")
     @Expose
-    private String spareId;
+    private String sno;
     @SerializedName("req_type")
     @Expose
     private Integer reqType;
-    public SpareOrderRequest(String token, String spareId){
+
+    public QrRequest(String token, String sno, Integer reqType){
         this.token = token;
-        this.spareId = spareId;
-    }
-    public SpareOrderRequest(String token, String spareId, Integer reqType){
-        this.token = token;
-        this.spareId = spareId;
+        this.sno = sno;
         this.reqType = reqType;
     }
 
@@ -43,12 +40,11 @@ public class SpareOrderRequest {
         this.token = token;
     }
 
-    public String getSpareId() {
-        return spareId;
+    public String getSno() {
+        return sno;
     }
 
-    public void setSpareId(String spareId) {
-        this.spareId = spareId;
+    public void setSno(String sno) {
+        this.sno = sno;
     }
-
 }

@@ -1,0 +1,27 @@
+<resources>
+    <string-array name="material_options">
+        <item>Request Material</item>
+        <item>View all spares</item>
+    </string-array>
+
+    <string-array name="material_detail_option">
+        <item>New Material</item>
+        <item>Maintenance</item>
+        <item>Replacement</item>
+        <item>Decommission</item>
+    </string-array>
+
+    <string-array name="spare_detail_option">
+        <item>New Spare</item>
+        <item>Maintenance</item>
+        <item>Replacement</item>
+        <item>Decommission</item>
+    </string-array>
+
+    <string-array name="item_detail_option">
+        <item>New item</item>
+        <item>Maintenance</item>
+        <item>Replacement</item>
+        <item>Decommission</item>
+    </string-array>
+</resources>

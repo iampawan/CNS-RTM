@@ -32,4 +32,6 @@
     <string name="create_service">Create Service</string>
     <string name="service_status">Service Status</string>
     <string name="service_days">Service Days</string>
+    <string name="choose">Choose Option</string>
+    <string name="view_all">View all options</string>
 </resources>

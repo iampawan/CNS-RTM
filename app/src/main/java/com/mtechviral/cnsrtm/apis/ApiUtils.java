@@ -2,8 +2,10 @@ package com.mtechviral.cnsrtm.apis;
 
 import com.mtechviral.cnsrtm.apis.interfaces.CreateServiceApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.LoginApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.MaterialCreateApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.MaterialListApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.PendingSpareApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.QRApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.SpareListApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.SpareRequestApiService;
 
@@ -41,6 +43,14 @@ public class ApiUtils {
     public static CreateServiceApiService getCreateServiceAPIService() {
 
         return RetrofitClient.getClient(BASE_URL).create(CreateServiceApiService.class);
+    }
+    public static MaterialCreateApiService getMaterialCreateAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(MaterialCreateApiService.class);
+    }
+    public static QRApiService getQRAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(QRApiService.class);
     }
 
 }

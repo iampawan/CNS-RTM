@@ -1,5 +1,7 @@
 package com.mtechviral.cnsrtm.activities;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,10 +12,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -35,10 +38,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.mtechviral.cnsrtm.R;
 import com.mtechviral.cnsrtm.adapters.EquipmentAdapter;
 import com.mtechviral.cnsrtm.apis.ApiUtils;
+import com.mtechviral.cnsrtm.apis.interfaces.MaterialCreateApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.MaterialListApiService;
 import com.mtechviral.cnsrtm.listeners.EquipmentClickListener;
 import com.mtechviral.cnsrtm.model.EquipmentRequest;
 import com.mtechviral.cnsrtm.model.EquipmentResponse;
+import com.mtechviral.cnsrtm.model.MaterialCreateRequest;
+import com.mtechviral.cnsrtm.model.MaterialCreateResponse;
 import com.mtechviral.cnsrtm.model.datamodel.EquipmentData;
 import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
@@ -49,7 +55,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class HomeActivity extends AppCompatActivity implements EquipmentClickListener, View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements EquipmentClickListener {
     MaterialListApiService materialListApiService;
     RecyclerView rView;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -59,6 +65,8 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     AppBarLayout appBarLayout;
     LinearLayout bgLinear;
     TextView tvAdminName,tvAdminLocation;
+    MaterialCreateApiService materialCreateApiService;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         initToolbaritems();
         initNavigation();
         initComponents();
+
 
     }
 
@@ -155,6 +164,7 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
 
     private void setComponents(){
         materialListApiService = ApiUtils.getMaterialListAPIService();
+        materialCreateApiService = ApiUtils.getMaterialCreateAPIService();
         tvAdminName.setText(Prefs.getString("firstname","")+" "+Prefs.getString("lastname",""));
         tvAdminLocation.setText(Prefs.getString("location",""));
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
@@ -250,16 +260,45 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     }
 
     @Override
-    public void itemClicked(View view, int position) {
+    public void itemClicked(View view, final int position) {
         int num = position + 1;
-        String name = allItems.get(position).getMaterialName();
-        Integer id = allItems.get(position).getId();
+        final String name = allItems.get(position).getMaterialName();
+        final Integer id = allItems.get(position).getId();
         Log.d("aa", "itemClicked: "+name+"-"+id);
-        Intent i = new Intent(this, SpareActivity.class);
-        i.putExtra("mat_id",id);
-        i.putExtra("mat_name",name);
-        i.putExtra("mat_image",allItems.get(position).getImageUrl());
-        startActivity(i);
+
+        new MaterialDialog.Builder(this)
+                .title(R.string.choose)
+                .items(R.array.material_options)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        dialog.dismiss();
+                        Log.d("which1", "onSelection: "+which);
+                        if(text.equals("View all spares")){
+                            Intent i = new Intent(HomeActivity.this, SpareActivity.class);
+                            i.putExtra("mat_id",id);
+                            i.putExtra("mat_name",name);
+                            i.putExtra("mat_image",allItems.get(position).getImageUrl());
+                            startActivity(i);
+                        }else {
+                            new MaterialDialog.Builder(HomeActivity.this)
+                                    .title(R.string.choose)
+                                    .items(R.array.material_detail_option)
+                                    .itemsCallback(new MaterialDialog.ListCallback() {
+                                        @Override
+                                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                            dialog.dismiss();
+                                            Log.d("which2", "onSelection: "+which);
+                                            callMaterialOption(which+1,id,name);
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                })
+                .show();
+
+
     }
 
     private void showFailedView(boolean show, String message) {
@@ -305,65 +344,70 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         });
     }
 
+
+
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(final Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_home,menu);
+//        final MenuItem searchItem = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        searchView.setIconified(false);
+//        searchView.setQueryHint("Search item...");
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                try {
+//                    rcAdapter.getFilter().filter(s);
+//                } catch (Exception e) {
+//                }
+//                return true;
+//            }
+//        });
+//        // Detect SearchView icon clicks
+//        searchView.setOnSearchClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                itemTouchHelper.attachToRecyclerView(null);
+//                setItemsVisibility(menu, searchItem, false);
+//            }
+//        });
+//
+//        // Detect SearchView close
+//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+//            @Override
+//            public boolean onClose() {
+////                itemTouchHelper.attachToRecyclerView(rView);
+//                setItemsVisibility(menu, searchItem, true);
+//                return false;
+//            }
+//        });
+//        searchView.onActionViewCollapsed();
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnLoginSignupBack:
-                onBackPressed();
-                break;
-            default:
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home,menu);
+        return true;
     }
 
-
-
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setIconified(false);
-        searchView.setQueryHint("Search item...");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                try {
-                    rcAdapter.getFilter().filter(s);
-                } catch (Exception e) {
-                }
-                return true;
-            }
-        });
-        // Detect SearchView icon clicks
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                itemTouchHelper.attachToRecyclerView(null);
-                setItemsVisibility(menu, searchItem, false);
-            }
-        });
-
-        // Detect SearchView close
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-//                itemTouchHelper.attachToRecyclerView(rView);
-                setItemsVisibility(menu, searchItem, true);
-                return false;
-            }
-        });
-        searchView.onActionViewCollapsed();
-        return super.onCreateOptionsMenu(menu);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_qr:
+                Intent i = new Intent(this, QrActivity.class);
+                startActivity(i);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
@@ -411,5 +455,59 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         return true;
     }
 
+    private void callMaterialOption(Integer req_type, Integer id, String name){
 
-}
+        pd = Utility.showProgress(this,R.string.please_wait);
+        final MaterialCreateRequest materialCreateRequest = new MaterialCreateRequest(Prefs.getString("token", ""),id,req_type);
+
+        materialCreateApiService.savePost(materialCreateRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<MaterialCreateResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onFailRequest2(e.getMessage());
+
+                    }
+
+                    @Override
+                    public void onNext(MaterialCreateResponse materialCreateResponse) {
+                        if (materialCreateResponse.getMessage().equals("Success")) {
+                            displayApiResult2(materialCreateResponse);
+                        } else {
+                            onFailRequest2(getString(R.string.something_wrong));
+                        }
+                    }
+
+                });
+    }
+
+    private void displayApiResult2(MaterialCreateResponse materialCreateResponse) {
+        pd.dismiss();
+        new AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage("Your request id is: "+materialCreateResponse.getReqId()+". It will be processed shortly.")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+//                        Intent i = new Intent(HomeActivity.this, HomeActivity.class);
+//                        startActivity(i);
+//                        finish();
+                    }
+                })
+                .show();
+    }
+
+    private void onFailRequest2(String message) {
+        pd.dismiss();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    }
+
+

@@ -15,10 +15,12 @@ public class SpareRequest {
     @Expose
     private Integer matId;
 
+
     public SpareRequest(String token, Integer matid){
         this.token = token;
         this.matId = matid;
     }
+
 
     public String getToken() {
         return token;

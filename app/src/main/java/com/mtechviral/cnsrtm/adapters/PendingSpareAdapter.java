@@ -87,7 +87,9 @@ public class PendingSpareAdapter extends RecyclerView.Adapter<PendingSpareAdapte
     public void onBindViewHolder(PendingSpareAdapter.ItemViewHolder holder, int position) {
         holder.title.setText(dataList.get(position).getSparename());
         String td= dataList.get(position).getSparename().substring(0,2);
-        holder.assigned.setText(dataList.get(position).getAssignedTo().toString());
+        try {
+            holder.assigned.setText(dataList.get(position).getAssignedTo().toString());
+        }catch (Exception e){}
         holder.status.setText(dataList.get(position).getStatus());
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
 // generate random color

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by pawankumar on 01/04/17.
  */
 
-public class SpareOrderResponse {
+public class MaterialCreateResponse {
     @SerializedName("message")
     @Expose
     private String message;
@@ -22,6 +22,7 @@ public class SpareOrderResponse {
     public void setMessage(String message) {
         this.message = message;
     }
+
     public Integer getReqId() {
         return reqId;
     }
