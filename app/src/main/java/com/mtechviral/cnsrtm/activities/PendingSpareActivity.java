@@ -1,33 +1,29 @@
 package com.mtechviral.cnsrtm.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.mtechviral.cnsrtm.R;
-import com.mtechviral.cnsrtm.adapters.SpareAdapter;
+import com.mtechviral.cnsrtm.adapters.PendingSpareAdapter;
 import com.mtechviral.cnsrtm.apis.ApiUtils;
-import com.mtechviral.cnsrtm.apis.interfaces.SpareListApiService;
-import com.mtechviral.cnsrtm.listeners.SpareClickListener;
-import com.mtechviral.cnsrtm.model.SpareRequest;
-import com.mtechviral.cnsrtm.model.SpareResponse;
-import com.mtechviral.cnsrtm.model.datamodel.SpareData;
+import com.mtechviral.cnsrtm.apis.interfaces.PendingSpareApiService;
+import com.mtechviral.cnsrtm.listeners.PendingSpareClickListener;
+import com.mtechviral.cnsrtm.model.PendingSparesRequest;
+import com.mtechviral.cnsrtm.model.PendingSparesResponse;
+import com.mtechviral.cnsrtm.model.datamodel.PendingSparesData;
 import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
 
@@ -37,74 +33,48 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class SpareActivity extends AppCompatActivity implements SpareClickListener {
-    SpareListApiService spareListApiService;
+
+public class PendingSpareActivity extends AppCompatActivity implements PendingSpareClickListener {
     RecyclerView rView;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    SpareAdapter rcAdapter;
-    ArrayList<SpareData> allItems = new ArrayList<>();
-    Integer mat_id;
-    String mat_name,mat_image;
-    TextView name,brief;
-    ImageView icon;
+    PendingSpareAdapter rcAdapter;
+    ArrayList<PendingSparesData> allItems = new ArrayList<>();
+    PendingSpareApiService pendingSpareApiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_spare);
-        mat_id = getIntent().getExtras().getInt("mat_id");
-        mat_name = getIntent().getExtras().getString("mat_name");
-        mat_image = getIntent().getExtras().getString("mat_image");
+        setContentView(R.layout.activity_pending_spare);
         initToolbaritems();
         initComponents();
-
-
     }
-
     private void initToolbaritems() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Spares");
+            actionBar.setTitle(R.string.requests);
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void initComponents() {
+
         rView = (RecyclerView) findViewById(R.id.recyclerView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        name = (TextView) findViewById(R.id.name);
-        brief = (TextView) findViewById(R.id.brief);
-        icon = (ImageView) findViewById(R.id.icon);
         setComponents();
-
     }
 
     private void setComponents(){
+        pendingSpareApiService = ApiUtils.getPendingSpareAPIService();
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        name.setText(mat_name);
-        String td = mat_name.substring(0,2);
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-// generate random color
-        int color1 = generator.getRandomColor();
-        brief.setText("Material ID : "+mat_id);
-
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(td, color1);
-
-        icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        icon.setImageDrawable(drawable);
-
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         rView.setLayoutManager(layoutManager);
         rView.setNestedScrollingEnabled(false);
         rView.setHasFixedSize(false);
-        rcAdapter = new SpareAdapter(this, new ArrayList<SpareData>());
+        rcAdapter = new PendingSpareAdapter(this, new ArrayList<PendingSparesData>());
         rView.setAdapter(rcAdapter);
-
-        spareListApiService = ApiUtils.getSpareListAPIService();
 
         loadJSON();
 
@@ -117,9 +87,10 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
             }
         });
     }
-    private void setRecyclerView(ArrayList<SpareData> rowListItem) {
 
-        rcAdapter = new SpareAdapter(this, rowListItem);
+    private void setRecyclerView(ArrayList<PendingSparesData> rowListItem) {
+
+        rcAdapter = new PendingSpareAdapter(this, rowListItem);
         rView.setAdapter(rcAdapter);
         rcAdapter.setClickListener(this);
     }
@@ -131,17 +102,17 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                requestMaterialData();
+                requestSparesData();
             }
         }, 100);
 
     }
 
-    private void requestMaterialData() {
-        final SpareRequest spareRequest = new SpareRequest(Prefs.getString("token", ""),mat_id);
+    private void requestSparesData() {
+        final PendingSparesRequest spareRequest = new PendingSparesRequest(Prefs.getString("token", ""),"-1");
 
-        spareListApiService.savePost(spareRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<SpareResponse>() {
+        pendingSpareApiService.savePost(spareRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<PendingSparesResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -149,14 +120,14 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
 
                     @Override
                     public void onError(Throwable e) {
-                        onFailRequest(e.getMessage().toString());
+                        onFailRequest(e.getMessage());
 
                     }
 
                     @Override
-                    public void onNext(SpareResponse spareResponse) {
-                        if (spareResponse.getMessage().equals("Success")) {
-                            displayApiResult(spareResponse);
+                    public void onNext(PendingSparesResponse pendingSparesResponse) {
+                        if (pendingSparesResponse.getMessage().equals("Success")) {
+                            displayApiResult(pendingSparesResponse);
                         } else {
                             onFailRequest(getString(R.string.something_wrong));
                         }
@@ -165,16 +136,16 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
                 });
     }
 
-    private void displayApiResult(SpareResponse spareResponse) {
-        Log.d("spare - ",spareResponse.toString());
+    private void displayApiResult(PendingSparesResponse pendingSparesResponse) {
+        Log.d("spare - ",pendingSparesResponse.toString());
         allItems.clear();
         swipeProgress(false);
-        int datasize = spareResponse.getData().size();
+        int datasize = pendingSparesResponse.getData().size();
         if (datasize == 0) {
             showNoItemView(true);
         } else {
             for (int i = 0; i < datasize; i++) {
-                allItems.add(i, spareResponse.getData().get(i));
+                allItems.add(i, pendingSparesResponse.getData().get(i));
             }
             setRecyclerView(allItems);
         }
@@ -192,21 +163,7 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
     @Override
     public void itemClicked(View view, int position) {
         int num = position + 1;
-        String name = allItems.get(position).getName();
-        String id = allItems.get(position).getId().toString();
-        Log.d("aa", "itemClicked: "+name+"-"+id);
-        Intent i = new Intent(this, ItemDetailActivity.class);
-        i.putExtra("spare_name",name);
-        i.putExtra("spare_id",id);
-        i.putExtra("spare_img", allItems.get(position).getImageurl());
-        i.putExtra("spare_quantity",allItems.get(position).getQuantity().toString());
-        i.putExtra("spare_description",allItems.get(position).getDesc());
-        i.putExtra("spare_testing_required",allItems.get(position).getTestingRequired());
-        i.putExtra("spare_shipping_time",allItems.get(position).getShippingTime().toString());
-        i.putExtra("spare_factory_lead_time",allItems.get(position).getFactoryLeadTime().toString());
-        i.putExtra("spare_warehouse", allItems.get(position).getWarehouse());
-        i.putExtra("spare_sourced_from", allItems.get(position).getSourcedFrom());
-        startActivity(i);
+
     }
 
     private void showFailedView(boolean show, String message) {
@@ -307,7 +264,7 @@ public class SpareActivity extends AppCompatActivity implements SpareClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-               onBackPressed();
+                onBackPressed();
                 break;
         }
         return true;

@@ -79,10 +79,11 @@
                                 android:layout_margin="@dimen/activity_horizontal_margin">
 
                                 <CheckBox
+                                    android:id="@+id/cbRemember"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:paddingRight="50dp"
-                                    android:text="Remember me"
+                                    android:text="@string/remember_me"
                                     android:textColor="@color/logintext"
                                     android:textStyle="bold" />
 
@@ -93,6 +94,7 @@
                                     android:layout_alignParentRight="true"
                                     android:layout_centerVertical="true"
                                     android:text="Forgot Password"
+                                    android:visibility="invisible"
                                     android:textColor="@color/logintext"
                                     android:textStyle="bold" />
 
@@ -145,6 +147,7 @@
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:text="@string/sign_up"
+            android:visibility="gone"
             android:textAllCaps="false" />
 
     </RelativeLayout>

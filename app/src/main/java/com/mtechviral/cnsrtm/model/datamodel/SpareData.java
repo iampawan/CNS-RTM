@@ -36,6 +36,18 @@ public class SpareData {
     @Expose
     private Integer quantity;
 
+    @SerializedName("description")
+    @Expose
+    private String desc;
+
+    public String  getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     public String getName() {
         return name;
     }

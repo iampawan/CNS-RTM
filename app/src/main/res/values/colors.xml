@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff9807</color>
-    <color name="colorPrimaryDark">#f27d04</color>
-    <color name="colorAccent">#ff9807</color>
-    <color name="colorAccentDark">#f27d04</color>
-    <color name="button_orange">#fe5824</color>
+    <color name="colorPrimary">#303030</color>
+    <color name="colorPrimaryDark">#202020</color>
+    <color name="colorAccent">#303030</color>
+    <color name="colorAccentDark">#202020</color>
+    <color name="button_orange">#324594</color>
     <color name="button_white">@android:color/white</color>
     <color name="button_blue">#b83e4148</color>
     <color name="button_green">#43bd42</color>
     <color name="button_gray">#f1f5f8</color>
     <color name="black_trans">#ab134990</color>
-    <color name="button_magenta">#ea2064</color>
-    <color name="button_lightorange">#b0c9821e</color>
+    <color name="button_magenta">#ab181818</color>
+    <color name="button_lightorange">#324594</color>
 
     <color name="loginInputBg">#f1f5f8</color>
 
-    <color name="logincolorAccent">#fe5824</color>
+    <color name="logincolorAccent">#324594</color>
 
     <color name="logintext">#636363</color>
 
 
     <!--style 12-->
-    <color name="LogincolorAccent">#fe5824</color>
+    <color name="LogincolorAccent">#324594</color>
 
     <color name="grey_3">#f7f7f7</color>
     <color name="grey_5">#f2f2f2</color>
@@ -32,6 +32,7 @@
     <color name="grey_80">#37474F</color>
     <color name="grey_90">#263238</color>
     <color name="greysplit">#70dfdfdf</color>
+    <color name="blackone">#303030</color>
 
     <color name="accent">#caffeb3b</color>
     <color name="accent_translucent">#caffeb3b</color>
@@ -39,4 +40,7 @@
     <color name="main_menu_bg_active">#353a4c</color>
     <color name="main_menu_count_active">#ffffff</color>
     <color name="main_menu_count_nonactive">#84ff02</color>
+
+    <color name="csbackground">#f1f5f8</color>
+    <color name="csSplitterGray">#70dfdfdf</color>
 </resources>

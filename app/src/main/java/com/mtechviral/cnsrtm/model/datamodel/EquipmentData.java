@@ -14,7 +14,7 @@ public class EquipmentData {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("image_url")
+    @SerializedName("imageurl")
     @Expose
     private String imageUrl;
 

@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
-import com.elyeproj.loaderviewlibrary.LoaderImageView;
 import com.mtechviral.cnsrtm.R;
 import com.mtechviral.cnsrtm.listeners.SpareClickListener;
 import com.mtechviral.cnsrtm.model.datamodel.SpareData;
@@ -42,14 +44,14 @@ public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ItemViewHold
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private LoaderImageView image;
+        private ImageView image;
         private TextView title, item_count;
 
         ItemViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            image = (LoaderImageView) itemView.findViewById(R.id.image);
+            image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             item_count = (TextView) itemView.findViewById(R.id.item_count);
         }
@@ -82,15 +84,30 @@ public class SpareAdapter extends RecyclerView.Adapter<SpareAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(SpareAdapter.ItemViewHolder holder, int position) {
         holder.title.setText(dataList.get(position).getName());
+        String td= dataList.get(position).getName().substring(0,2);
         holder.item_count.setText(dataList.get(position).getQuantity().toString()+" items in stock");
 
-        Glide.with(context)
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+// generate random color
+        int color1 = generator.getRandomColor();
+        try {
+            if (dataList.get(position).getImageurl().equals("1")) {
+                TextDrawable drawable = TextDrawable.builder()
+                        .buildRect(td, color1);
+
+                holder.image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                holder.image.setImageDrawable(drawable);
+
+            } else {
+                Glide.with(context)
 //                .load("https://s3-us-west-2.amazonaws.com/material-ui-template/ecommerce/style-6/Ecommerce-6-img-1.jpg")
-                .load(dataList.get(position).getImageurl())
-                .thumbnail(0.01f)
-                .fitCenter()
-                .placeholder(R.drawable.loading_placeholder)
-                .into(holder.image);
+                        .load(dataList.get(position).getImageurl())
+                        .thumbnail(0.01f)
+                        .fitCenter()
+                        .placeholder(R.drawable.loading_placeholder)
+                        .into(holder.image);
+            }
+        }catch (Exception e){}
     }
 
 

@@ -1,12 +1,10 @@
 package com.mtechviral.cnsrtm.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,14 +21,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Space;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.mtechviral.cnsrtm.R;
 import com.mtechviral.cnsrtm.adapters.EquipmentAdapter;
@@ -56,6 +56,9 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     EquipmentAdapter rcAdapter;
     ArrayList<EquipmentData> allItems = new ArrayList<>();
     ImageView profileView;
+    AppBarLayout appBarLayout;
+    LinearLayout bgLinear;
+    TextView tvAdminName,tvAdminLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,8 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
 
     private void initToolbaritems() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        bgLinear = (LinearLayout) findViewById(R.id.bgLinear);
         profileView = (ImageView) findViewById(R.id.profileView);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -86,28 +91,39 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     }
 
     private void loadImageRequest(final DrawerLayout bg, String url, String urlThumb) {
-        Glide.with(this).load(R.drawable.airoplane).asBitmap().centerCrop().into(new BitmapImageViewTarget(profileView) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                profileView.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+//        Glide.with(this).load(Prefs.getString("imageurl","")).asBitmap().centerCrop().placeholder(R.drawable.loading_placeholder).into(new BitmapImageViewTarget(profileView) {
+//            @Override
+//            protected void setResource(Bitmap resource) {
+//                RoundedBitmapDrawable circularBitmapDrawable =
+//                        RoundedBitmapDrawableFactory.create(getResources(), resource);
+//                circularBitmapDrawable.setCircular(true);
+//                profileView.setImageDrawable(circularBitmapDrawable);
+//            }
+//        });
+        String fn = Prefs.getString("firstname","").substring(0,1);
+        String ln = Prefs.getString("lastname","").substring(0,1);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+// generate random color
+        int color1 = generator.getRandomColor();
+
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(fn+ln, color1);
+
+        profileView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        profileView.setImageDrawable(drawable);
+
         DrawableRequestBuilder<String> thumbnailRequest = Glide
                 .with(this)
                 .load(urlThumb);
 
         Glide.with(this)
-                .load(R.drawable.airport)
+                .load(R.drawable.plane)
                 .crossFade()
                 .centerCrop()
-                .thumbnail(thumbnailRequest)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        bg.setBackground(resource);
+                       bg.setBackgroundColor(getResources().getColor(R.color.blackone));
                     }
                 });
     }
@@ -115,17 +131,32 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
 
     private void initNavigation() {
         final NavigationView navigationViewLeft = (NavigationView) findViewById(R.id.nav_view);
-        View navLeftLay = navigationViewLeft.getHeaderView(0);
-        Space spaceLeftTop = (Space) navLeftLay.findViewById(R.id.spaceLeftTop);
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            spaceLeftTop.setVisibility(View.VISIBLE);
-        }
+//        View navLeftLay = navigationViewLeft.getHeaderView(0);
+        navigationViewLeft.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(final MenuItem item) {
+                onItemSelected(item.getItemId());
+                //drawer.closeDrawers();
+                return true;
+            }
+        });
+        navigationViewLeft.setItemIconTintList(getResources().getColorStateList(R.color.nav_state_list));
     }
 
     private void initComponents() {
+        tvAdminName = (TextView) findViewById(R.id.tvAdminName);
+        tvAdminLocation = (TextView) findViewById(R.id.tvAdminLocation);
         rView = (RecyclerView) findViewById(R.id.recyclerView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
+        setComponents();
+
+
+    }
+
+    private void setComponents(){
+        materialListApiService = ApiUtils.getMaterialListAPIService();
+        tvAdminName.setText(Prefs.getString("firstname","")+" "+Prefs.getString("lastname",""));
+        tvAdminLocation.setText(Prefs.getString("location",""));
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         rView.setLayoutManager(layoutManager);
@@ -134,7 +165,6 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         rcAdapter = new EquipmentAdapter(this, new ArrayList<EquipmentData>());
         rView.setAdapter(rcAdapter);
 
-        materialListApiService = ApiUtils.getMaterialListAPIService();
 
         loadJSON();
 
@@ -227,6 +257,8 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
         Log.d("aa", "itemClicked: "+name+"-"+id);
         Intent i = new Intent(this, SpareActivity.class);
         i.putExtra("mat_id",id);
+        i.putExtra("mat_name",name);
+        i.putExtra("mat_image",allItems.get(position).getImageUrl());
         startActivity(i);
     }
 
@@ -340,4 +372,44 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
             if (item != exception) item.setVisible(visible);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            doExitApp();
+        }
+    }
+
+    private long exitTime = 0;
+    public void doExitApp() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(this, R.string.press_again_exit_app, Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
+
+    public boolean onItemSelected(int id) {
+        switch (id) {
+            //sub menu
+            case R.id.requests:
+                Intent i = new Intent(this, PendingSpareActivity.class);
+                startActivity(i);
+                break;
+            case R.id.create_service:
+                startActivity(new Intent(this, CreateServiceActivity.class));
+                break;
+            default:
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawers();
+        return true;
+    }
+
+
 }

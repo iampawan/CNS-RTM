@@ -60,7 +60,7 @@
     </style>
 
     <style name="ButtonOrange" parent="@android:style/Widget.Button">
-        <item name="android:background">@color/colorAccent</item>
+        <item name="android:background">@color/button_lightorange</item>
     </style>
     <style name="ButtonWhite" parent="@android:style/Widget.Button">
         <item name="android:background">@color/button_white</item>
@@ -78,6 +78,18 @@
         <item name="android:scrollbarDefaultDelayBeforeFade">1000</item>
     </style>
 
+    <style name="DrawerStyle" parent="@style/ThemeOverlay.AppCompat.Light">
+        <item name="colorControlHighlight">#00000000</item> "
+    </style>
+
+    <style name="CSInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textCursorDrawable">@drawable/loginsignup_color_cursor</item>
+    </style>
 
 
 </resources>

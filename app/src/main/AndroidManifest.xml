@@ -30,9 +30,16 @@
         <activity
             android:name=".activities.ItemDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/HomeTheme"></activity>
-        <activity android:name=".activities.SpareActivity"
-            android:theme="@style/SpareTheme"></activity>
+            android:theme="@style/SpareTheme" />
+        <activity
+            android:name=".activities.SpareActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SpareTheme" />
+        <activity
+            android:name=".activities.PendingSpareActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SpareTheme" />
+        <activity android:name=".activities.CreateServiceActivity"></activity>
     </application>
 
 </manifest>

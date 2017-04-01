@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ContextWrapper;
 
 import com.mtechviral.cnsrtm.utils.Prefs;
+import com.onesignal.OneSignal;
 
 /**
  * Created by pawankumar on 26/03/17.
@@ -15,6 +16,7 @@ public class CnsApp extends Application {
     public void onCreate() {
         super.onCreate();
         setPref();
+        OneSignal.startInit(this).init();
     }
 
     private void setPref(){

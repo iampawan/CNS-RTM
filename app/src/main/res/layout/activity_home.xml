@@ -19,26 +19,38 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="false"
+            android:id="@+id/app_bar_layout"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
+
                 app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="160dp"-->
+                    <!--android:scaleType="centerCrop"-->
+                    <!--android:id="@+id/bgLinear"-->
+                    <!--android:alpha="1"-->
+                    <!--android:src="@drawable/plane"/>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="158dp"
-                    android:fitsSystemWindows="true"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
                     android:paddingTop="80dp"
+                    android:id="@+id/bgLinear"
                     app:layout_collapseMode="pin">
+
 
                 </LinearLayout>
 
@@ -54,6 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:textColor="@android:color/white"
                         android:text="@string/airport_authority_of_india"
                         android:textSize="21sp" />
 
@@ -68,18 +81,19 @@
             android:layout_height="match_parent"
             android:paddingTop="42dp">
 
+
             <ImageView
                 android:id="@+id/profileView"
                 android:layout_width="74dp"
                 android:layout_height="74dp"
                 android:layout_margin="16dp"
-                android:src="@drawable/airport" />
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/profileView"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@+id/profileView"
                 android:orientation="vertical">
 
@@ -87,6 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/admin"
+                    android:id="@+id/tvAdminName"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
 
@@ -96,8 +111,9 @@
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
                     android:text="@string/delhi_airport"
+                    android:id="@+id/tvAdminLocation"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -113,9 +129,14 @@
     </LinearLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header" />
+        android:background="@android:color/white"
+        android:fitsSystemWindows="false"
+        app:headerLayout="@layout/header_drawer"
+        app:itemTextColor="@color/nav_state_list"
+        app:menu="@menu/menu_drawer"
+        app:theme="@style/DrawerStyle"  />
 
 </android.support.v4.widget.DrawerLayout>

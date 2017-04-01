@@ -118,8 +118,15 @@ public class SignInActivity extends AppCompatActivity {
                     public void onNext(LoginResponse loginResponse) {
                         pd.dismiss();
                         String token = loginResponse.getToken();
-                        Prefs.putBoolean("loggedIn",true);
+                        if(activityMainBinding.cbRemember.isChecked()) {
+                            Prefs.putBoolean("loggedIn", true);
+                        }
                         Prefs.putString("token",token);
+                        Prefs.putString("location",loginResponse.getLocation());
+                        Prefs.putString("firstname",loginResponse.getFirstname());
+                        Prefs.putString("lastname",loginResponse.getLastname());
+                        Prefs.putString("imageurl",loginResponse.getImageurl());
+
                         Log.d(TAG, "onNext: Token"+token);
                         Intent i = new Intent(SignInActivity.this, HomeActivity.class);
                         startActivity(i);
