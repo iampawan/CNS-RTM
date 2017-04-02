@@ -40,7 +40,7 @@ public class CreateServiceActivity extends AppCompatActivity implements View.OnC
     CreateServiceApiService createServiceApiService;
     ProgressDialog pd;
     String serial_number,spareID,warranty,purchaseDate,status;
-    Integer inspection;
+    String inspection;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private Calendar c;
 
@@ -79,7 +79,7 @@ public class CreateServiceActivity extends AppCompatActivity implements View.OnC
         serial_number = etSerial.getText().toString();
          spareID = etSpareID.getText().toString();
          warranty = etWarranty.getText().toString();
-         inspection = Integer.valueOf(etInspection.getText().toString());
+         inspection = etInspection.getText().toString();
          purchaseDate = etPurchaseDate.getText().toString();
          status = etServiceStatus.getText().toString();
 
@@ -93,7 +93,7 @@ public class CreateServiceActivity extends AppCompatActivity implements View.OnC
 //                Toast.makeText(this, "Button Apply Changes clicked!", Toast.LENGTH_SHORT).show();
                 if (!TextUtils.isEmpty(serial_number) && !TextUtils.isEmpty(spareID)
                         && !TextUtils.isEmpty(warranty)&& !TextUtils.isEmpty(purchaseDate)
-                        && !TextUtils.isEmpty(inspection.toString()) && !TextUtils.isEmpty(status)) {
+                        && !TextUtils.isEmpty(inspection) && !TextUtils.isEmpty(status)) {
                     if (Utility.isNetworkConnected(this)) {
                             createService();
                     } else {
@@ -121,7 +121,7 @@ public class CreateServiceActivity extends AppCompatActivity implements View.OnC
 
     private void createService() {
         final CreateServiceRequest createServiceRequest = new CreateServiceRequest(
-                Prefs.getString("token",""),serial_number,inspection,spareID,warranty,purchaseDate, status);
+                Prefs.getString("token",""),serial_number,Integer.valueOf(inspection),spareID,warranty,purchaseDate, status);
         pd = Utility.showProgress(this, R.string.please_wait);
         createServiceApiService.savePost(createServiceRequest).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CreateServiceResponse>() {

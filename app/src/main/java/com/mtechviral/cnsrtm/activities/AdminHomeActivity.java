@@ -283,11 +283,13 @@ public class AdminHomeActivity extends AppCompatActivity {
 
         private void onFailRequest(String message,View rootView,Integer j) {
             swipeProgress(false);
-            if (Utility.isNetworkConnected(getActivity())) {
-                showFailedView(true, message,rootView,j);
-            } else {
-                showFailedView(true, getString(R.string.check_internet),rootView,j);
-            }
+            try {
+                if (Utility.isNetworkConnected(getActivity())) {
+                    showFailedView(true, message, rootView, j);
+                } else {
+                    showFailedView(true, getString(R.string.check_internet), rootView, j);
+                }
+            }catch (Exception e){}
         }
 
         private void showFailedView(boolean show, String message, final View rootView, final Integer j) {

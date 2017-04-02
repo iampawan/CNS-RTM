@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.mtechviral.cnsrtm.model.QrRequest;
 import com.mtechviral.cnsrtm.model.QrResponse;
 import com.mtechviral.cnsrtm.utils.Prefs;
 import com.mtechviral.cnsrtm.utils.Utility;
+
+import java.io.UnsupportedEncodingException;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,9 +61,6 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
     private void initComponents(){
         qrApiService = ApiUtils.getQRAPIService();
         setComponents();
-
-
-
     }
 
     private void setComponents(){
@@ -74,11 +74,24 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        final String qrText = text;
+        String qrText = text;
+        String name = "", id="" ;
+        byte[] tmp2 = Base64.decode(qrText,Base64.DEFAULT);
+        try {
+           qrText = new String(tmp2, "UTF-8");
+            Log.d("qr", "onQRCodeRead: "+qrText);
+            String[] parts = qrText.split("-");
+            name = parts[0].trim();
+            id = parts[1].trim();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 //        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         if(flag){
+            final String finalId = id;
             new MaterialDialog.Builder(QrActivity.this)
-                    .title(R.string.choose)
+                    .title(name)
                     .items(R.array.item_detail_option)
                     .cancelable(false)
                     .itemsCallback(new MaterialDialog.ListCallback() {
@@ -86,7 +99,7 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                             dialog.dismiss();
                             Log.d("which2", "onSelection: " + which);
-                            callQrOption(qrText, which + 1);
+                            callQrOption(finalId, which + 1);
                         }
                     })
                     .show();

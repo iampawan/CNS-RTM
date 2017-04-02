@@ -61,6 +61,7 @@
                     style="@style/CSInput"
                     android:id="@+id/etSerial"
                     android:layout_width="0dp"
+                    android:inputType="number"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/serial_number"
@@ -83,6 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/spare_id"
+                    android:inputType="number"
                     android:padding="12dp"
                     android:textSize="12sp" />
 
@@ -100,6 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/warranty_in_days"
+                    android:inputType="number"
                     android:padding="12dp"
                     android:textSize="12sp" />
 
@@ -111,17 +114,18 @@
             android:orientation="horizontal"
             android:padding="@dimen/activity_ahalf_horizontal_margin">
 
-            <EditText
-                style="@style/CSInput"
-                android:id="@+id/etInspection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Inspection Cycle (in days)"
-                android:padding="12dp"
-                android:textSize="12sp" />
+                <EditText
+                    android:id="@+id/etInspection"
+                    style="@style/CSInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:hint="Inspection Cycle (in days)"
+                    android:padding="12dp"
+                    android:textSize="12sp" />
 
-        </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,6 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/service_days"
+                    android:inputType="number"
                     android:padding="12dp"
                     android:textSize="12sp" />
 

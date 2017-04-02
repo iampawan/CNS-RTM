@@ -20,7 +20,9 @@ public class ApiUtils {
     private ApiUtils() {}
 
     private static final String BASE_URL = "http://192.168.104.244:8000/";
+//    private static final String BASE_URL = "http://172.20.10.3:8000/";
     private static final String BASE_URL_ADMIN = "http://192.168.104.244:8000/cnsadmin/";
+//    private static final String BASE_URL_ADMIN = "http://172.20.10.3:8000/cnsadmin/";
 
     public static LoginApiService getLoginAPIService() {
 
