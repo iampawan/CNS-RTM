@@ -1,5 +1,8 @@
 package com.mtechviral.cnsrtm.apis;
 
+import com.mtechviral.cnsrtm.apis.interfaces.ApproveApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.AssignListApiService;
+import com.mtechviral.cnsrtm.apis.interfaces.AssignNowApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.CreateServiceApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.LoginApiService;
 import com.mtechviral.cnsrtm.apis.interfaces.MaterialCreateApiService;
@@ -17,6 +20,7 @@ public class ApiUtils {
     private ApiUtils() {}
 
     private static final String BASE_URL = "http://192.168.104.244:8000/";
+    private static final String BASE_URL_ADMIN = "http://192.168.104.244:8000/cnsadmin/";
 
     public static LoginApiService getLoginAPIService() {
 
@@ -51,6 +55,18 @@ public class ApiUtils {
     public static QRApiService getQRAPIService() {
 
         return RetrofitClient.getClient(BASE_URL).create(QRApiService.class);
+    }
+    public static ApproveApiService getAprooveAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(ApproveApiService.class);
+    }
+    public static AssignListApiService getAssignListAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(AssignListApiService.class);
+    }
+    public static AssignNowApiService getAssignNowAPIService() {
+
+        return RetrofitClient.getClient(BASE_URL).create(AssignNowApiService.class);
     }
 
 }

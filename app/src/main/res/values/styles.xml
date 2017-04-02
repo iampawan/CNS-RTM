@@ -20,14 +20,15 @@
     </style>
 
     <style name="HomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">@android:color/transparent</item>
-    <item name="colorPrimaryDark">@android:color/transparent</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="android:windowContentOverlay">@null</item>
-    <item name="windowActionBarOverlay">true</item>
-    <item name="selectableItemBackground">@drawable/selectable_item_background</item>
-    <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="selectableItemBackground">@drawable/selectable_item_background</item>
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
     </style>
+
     <style name="ActivityTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabIndicatorColor">@android:color/white</item>
@@ -45,6 +46,7 @@
         <item name="windowActionBarOverlay">true</item>
 
     </style>
+
     <style name="LoginStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -62,6 +64,7 @@
     <style name="ButtonOrange" parent="@android:style/Widget.Button">
         <item name="android:background">@color/button_lightorange</item>
     </style>
+
     <style name="ButtonWhite" parent="@android:style/Widget.Button">
         <item name="android:background">@color/button_white</item>
     </style>

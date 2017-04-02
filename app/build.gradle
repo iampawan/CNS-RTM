@@ -13,6 +13,7 @@ android {
         manifestPlaceholders = [onesignal_app_id               : "bf68896f-6ca3-4399-aaf7-25c1da543c6b",
                                 // Project number pulled from dashboard, local value is ignored.
                                 onesignal_google_project_number: "369310730323"]
+        vectorDrawables.useSupportLibrary = true
     }
     dataBinding {
         enabled = true
@@ -55,7 +56,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.1'
     compile 'com.afollestad.material-dialogs:core:0.9.4.2'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.jjoe64:graphview:4.2.1'
+    compile 'com.android.support:support-vector-drawable:25.3.0'
     testCompile 'junit:junit:4.12'
 }

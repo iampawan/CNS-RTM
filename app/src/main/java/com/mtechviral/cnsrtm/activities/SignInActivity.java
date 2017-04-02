@@ -55,8 +55,13 @@ public class SignInActivity extends AppCompatActivity {
 
     private void checkLoggedIn(){
         if(Prefs.getBoolean("loggedIn",false)){
-            startActivity(new Intent(this,HomeActivity.class));
-            finish();
+            if(Prefs.getBoolean("admin",false)) {
+                startActivity(new Intent(this, AdminHomeActivity.class));
+                finish();
+            }else{
+                startActivity(new Intent(this, HomeActivity.class));
+                finish();
+            }
         }
     }
 
@@ -94,6 +99,18 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
         }
     }
+    public void onAdminLoginClicked(String username, String password) {
+        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+            if (Utility.isNetworkConnected(this)) {
+                sendAdminPost(username.trim(), password.trim());
+            } else {
+                Toast.makeText(this, R.string.check_internet, Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void sendPost(String username, String password) {
         final ProgressDialog pd = Utility.showProgress(this,R.string.please_wait);
@@ -120,6 +137,7 @@ public class SignInActivity extends AppCompatActivity {
                         String token = loginResponse.getToken();
                         if(activityMainBinding.cbRemember.isChecked()) {
                             Prefs.putBoolean("loggedIn", true);
+                            Prefs.putBoolean("admin", false);
                         }
                         Prefs.putString("token",token);
                         Prefs.putString("location",loginResponse.getLocation());
@@ -129,6 +147,47 @@ public class SignInActivity extends AppCompatActivity {
 
                         Log.d(TAG, "onNext: Token"+token);
                         Intent i = new Intent(SignInActivity.this, HomeActivity.class);
+                        startActivity(i);
+                        finish();
+
+                    }
+
+                });
+
+    }
+    public void sendAdminPost(String username, String password) {
+        final ProgressDialog pd = Utility.showProgress(this,R.string.please_wait);
+        final LoginRequest loginPost = new LoginRequest(username, password);
+
+        loginApiService.saveAdminPost(loginPost).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<LoginResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        pd.dismiss();
+
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        pd.dismiss();
+                        Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onNext(LoginResponse loginResponse) {
+                        pd.dismiss();
+                        String token = loginResponse.getToken();
+                        if(activityMainBinding.cbRemember.isChecked()) {
+                            Prefs.putBoolean("loggedIn", true);
+                            Prefs.putBoolean("admin", true);
+                        }
+                        Prefs.putString("token",token);
+                        Prefs.putString("location",loginResponse.getLocation());
+                        Prefs.putString("firstname",loginResponse.getFirstname());
+                        Prefs.putString("lastname",loginResponse.getLastname());
+                        Prefs.putString("imageurl",loginResponse.getImageurl());
+                        Log.d(TAG, "onNext: Token"+token);
+                        Intent i = new Intent(SignInActivity.this, AdminHomeActivity.class);
                         startActivity(i);
                         finish();
 

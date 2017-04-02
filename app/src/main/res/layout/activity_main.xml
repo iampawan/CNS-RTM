@@ -129,6 +129,19 @@
                     android:textAllCaps="false"
                     android:text="@string/login"
                     android:textColor="@android:color/white" />
+                <Button
+                    android:id="@+id/btnAdminSignIn"
+                    style="@style/ButtonWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_below="@+id/btnSignIn"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:onClick="@{()->activity.onAdminLoginClicked(user.username,user.password)}"
+                    android:text="@string/sign_as_admin"
+                    android:textAllCaps="false" />
 
 
 

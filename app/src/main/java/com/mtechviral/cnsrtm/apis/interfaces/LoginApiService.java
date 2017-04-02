@@ -14,5 +14,7 @@ import rx.Observable;
 public interface LoginApiService {
     @POST("login/")
     Observable<LoginResponse> savePost(@Body LoginRequest loginPost);
+    @POST("cnsadmin/login/")
+    Observable<LoginResponse> saveAdminPost(@Body LoginRequest loginPost);
 
 }

@@ -1,12 +1,17 @@
 package com.mtechviral.cnsrtm.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -67,6 +72,8 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     TextView tvAdminName,tvAdminLocation;
     MaterialCreateApiService materialCreateApiService;
     ProgressDialog pd;
+    private static String TAG = "HomeActivity";
+    private static final int CAMERA_REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -403,11 +410,53 @@ public class HomeActivity extends AppCompatActivity implements EquipmentClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_qr:
-                Intent i = new Intent(this, QrActivity.class);
-                startActivity(i);
+                int permission = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA);
+
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    Log.i(TAG, "Permission to camera denied");
+                    makeRequest();
+                }else {
+                    Intent i = new Intent(this, QrActivity.class);
+                    startActivity(i);
+                }
+                break;
+            case R.id.action_logout:
+                Prefs.clear();
+                Intent j = new Intent(this,SignInActivity .class);
+                startActivity(j);
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void makeRequest() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                CAMERA_REQUEST_CODE);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+
+                if (grantResults.length == 0
+                        || grantResults[0] !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
+//                    startActivity(new Intent(this,HomeActivity.class));
+
+                    Log.i(TAG, "Permission has been denied by user");
+                } else {
+                    Log.i(TAG, "Permission has been granted by user");
+                    Intent i = new Intent(this, QrActivity.class);
+                    startActivity(i);
+                }
+                return;
+            }
+        }
     }
 
     private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {

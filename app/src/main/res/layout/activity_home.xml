@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:text="Airport Authority"
+                        android:text="@string/airports_authority"
                         android:textSize="21sp" />
 
                 </android.support.v7.widget.Toolbar>
@@ -84,8 +84,8 @@
 
             <ImageView
                 android:id="@+id/profileView"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_margin="16dp"
                 />
 

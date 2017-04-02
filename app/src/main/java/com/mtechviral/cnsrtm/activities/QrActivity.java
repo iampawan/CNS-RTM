@@ -34,6 +34,7 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
     ProgressDialog pd;
     Boolean flag = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +57,20 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
 
     private void initComponents(){
         qrApiService = ApiUtils.getQRAPIService();
-        qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
-        qrCodeReaderView.setOnQRCodeReadListener(this);
-        qrCodeReaderView.setBackCamera();
-        qrCodeReaderView.startCamera();
+        setComponents();
+
+
 
     }
+
+    private void setComponents(){
+        qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
+        qrCodeReaderView.setOnQRCodeReadListener(this);
+        qrCodeReaderView.setQRDecodingEnabled(true);
+        qrCodeReaderView.setAutofocusInterval(2000L);
+        qrCodeReaderView.setBackCamera();
+    }
+
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
@@ -81,7 +90,8 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
                         }
                     })
                     .show();
-        }else {
+        }
+        else {
 
         }
         flag = false;
@@ -162,6 +172,7 @@ public class QrActivity extends AppCompatActivity implements QRCodeReaderView.On
         }
         return true;
     }
+
 
 
 }
